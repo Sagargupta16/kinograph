@@ -1,0 +1,3 @@
+# Ruff's own default rules for the engine and the repo scripts, with one exclusion: the gate self-test fixtures are
+# planted faults (unseeded randomness, pasted glyphs and the like), wrong on purpose.
+extend-exclude = ["skills/praxinoscope/engine/qa_fixtures"]

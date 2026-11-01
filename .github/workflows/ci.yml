@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.14"
+
+      - name: Repo checks (dashes, secrets, home paths, line ends, frontmatter, links, manifests, versions)
+        run: python scripts/check.py
+
+      - name: Install lint tools
+        run: pip install --only-binary :all: -r requirements-dev.txt
+
+      - name: Ruff lint
+        run: ruff check skills/praxinoscope/engine scripts
+
+      - name: Ruff format
+        run: ruff format --check skills/praxinoscope/engine scripts
+
+      - name: Lint the skill (skillcheck)
+        run: npx -y @sagargupta1610/skillcheck@0.2.5 lint skills
+
+  selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+
+      - name: Install ffmpeg and fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-liberation fonts-dejavu-core
+
+      - name: Gate self test (planted faults, then the template rendered at 16:9 and 9:16)
+        run: |
+          mkdir -p "$RUNNER_TEMP/selftest"
+          cp -r skills/praxinoscope/engine/. "$RUNNER_TEMP/selftest/"
+          cd "$RUNNER_TEMP/selftest"
+          uv run --python 3.14 --no-project --with-requirements requirements.txt python qa.py selftest

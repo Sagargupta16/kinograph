@@ -1,0 +1,20 @@
+{
+  "name": "praxinoscope",
+  "owner": {
+    "name": "Sagar Gupta",
+    "url": "https://github.com/Sagargupta16"
+  },
+  "metadata": {
+    "description": "Short videos made from code: storyboard, proof, render and measured QA, with a builder agent and a fresh-eyes reviewer."
+  },
+  "plugins": [
+    {
+      "name": "praxinoscope",
+      "source": "./",
+      "description": "The praxinoscope skill: six original styles, a builder and a reviewer agent, a Python engine that draws every frame as a pure function of time, numpy music and sound effects mastered to -14 LUFS, and 58 coded QA checks.",
+      "version": "0.1.0",
+      "license": "MIT",
+      "category": "design"
+    }
+  ]
+}

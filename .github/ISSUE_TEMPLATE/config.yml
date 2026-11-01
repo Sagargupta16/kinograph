@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Install and usage
+    url: https://github.com/Sagargupta16/praxinoscope#install
+    about: How to add the plugin, what it needs on your machine, and how a video gets made. Check here before filing an issue.
+  - name: Contributing guide
+    url: https://github.com/Sagargupta16/praxinoscope/blob/main/CONTRIBUTING.md
+    about: How to add a style, change a gate, and the checks a pull request must pass.
