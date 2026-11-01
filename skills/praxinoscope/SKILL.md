@@ -22,7 +22,7 @@ Links and the `engine/`, `styles/` and `references/` paths are relative to this 
 
 ## Setting up and running commands
 
-- First use: `bash <skill>/setup.sh` checks uv, ffmpeg with libx264, ffprobe, the pinned Pillow and numpy, and a default font. It installs nothing and ends `SETUP: PASS`, or prints one `FIX` line per gap.
+- First use: `bash <skill>/setup.sh` checks uv, ffmpeg with libx264, ffprobe, the pinned Pillow and numpy, and a default font. It installs nothing system-wide (its first uv run may fetch the pinned Python and wheels into uv's cache) and ends `SETUP: PASS`, or prints a `FIX` line for each gap and ends `SETUP: FAIL`.
 - Engine scripts run from the video's working folder once the builder has copied the engine there: `uv run --no-project --with-requirements requirements.txt python <script> ...`. Below, `python` means exactly that.
 - Outputs go to `videos/<slug>/` under the current folder unless the user names another. A batch keeps one scenario at `videos/<batch>/scenario.md` (a "Rules for all" paragraph, then one `## <nn> <slug>` section per video) and builds each video in `videos/<batch>/builds/<nn-slug>/`, with its own builder and reviewers.
 - Before launching long background agents in the Claude desktop app, hold the computer awake with the app's keep-awake tool. On battery the app holds it only with its Keep awake on battery power setting on, and a closed lid sleeps whatever the setting. A long review once lost 6.5 hours to a laptop that went to sleep after the turn ended.

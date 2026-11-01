@@ -57,7 +57,7 @@ Each card in `skills/praxinoscope/styles/` gives the palette with its contrast r
 | Builder agent | Builds, renders and checks one video in its own context, so engine logs stay out of your chat |
 | Reviewer agent | Fresh eyes on the sheets and the file; never edits |
 | Engine | `skills/praxinoscope/engine/`: drawing helpers on one integer frame clock, nine pure transitions, film grain, numpy instruments placed by their perceptual landmark, a 4x true-peak master, offline narration with word cues, frames passed through shared memory into ffmpeg |
-| QA gates | 58 coded checks (`qa.py check`): safe area, overlap, contrast, reading holds, WCAG 2.2 flashes, pops and freezes, true peak, cue sync, the mux, colour tags, size |
+| QA gates | 58 coded checks, 47 of them run by `qa.py check` on the file and the rest at the proof, in the master, `qa.py calib` and `qa.py diff`: safe area, overlap, contrast, reading holds, WCAG 2.2 flashes, pops and freezes, true peak, cue sync, the mux, colour tags, size |
 | Self test | `qa.py selftest` plants a fault for every code and proves each gate still catches it |
 | Approval | `qa.py approve`, `diff` and `verify`: what was reviewed is pinned by hash, and what changed since is named frame by frame |
 

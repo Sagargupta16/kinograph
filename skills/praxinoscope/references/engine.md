@@ -84,7 +84,7 @@ Run every script from the working folder as `uv run --no-project --with-requirem
 | `qa_purity.py` | Q1201 and `qa.py purity` |
 | `qa_lint.py` | Q1202 to Q1206, Q904 and Q905; `qa.py lint`, and `qa.py owner`, which names the scene function that owns a time or a traceback |
 | `qa_audiostrip.py` | `qa.py audiostrip`: `review/audio.png`, the sound drawn for a reviewer who cannot hear it |
-| `qa_selftest.py` | `qa.py selftest`: every gate against planted faults, plus the template at 1920x1080 and 1080x1920. The rerun on 2026-11-01 ended `SELFTEST: PASS (144 fixtures, 58 of 58 codes covered, 0 expected gaps)` in 49.2 s |
+| `qa_selftest.py` | `qa.py selftest`: every gate against planted faults, plus the template at 1920x1080 and 1080x1920. On 2026-11-01 it ended `SELFTEST: PASS (147 fixtures, 58 of 58 codes covered, 0 expected gaps)` in 55.5 s |
 | `qa_fixtures/` | The cases selftest runs: seven case modules (text, registry, source, files, sound, scans, approval), two shared makers (`fake.py`, `media.py`) and small scenes files that each plant one fault or serve as a clean control. Media are made at run time in temporary folders; nothing is downloaded |
 | `requirements.txt` | Pillow and numpy pinned with hashes; the only packages the engine imports outside the standard library |
 | `requirements.in` | The two pins `requirements.txt` is compiled from |
@@ -189,7 +189,7 @@ On 2026-11-01 the template's end card, whose shapes drift, gave `warning: STATIC
 | full | `python run_all.py full --size 1920x1080` | ffmpeg with libx264 | an `APPROVAL:` line and one `DELIVERED` line, or a `REJECTED` or `UNCHECKED` line |
 | audio | `python run_all.py audio --size 1920x1080` | `video.mp4` from `full`, with the same flags | the same as full |
 
-Every stage writes `build.json` first. Both stages that need ffmpeg look for it on PATH, then in `/opt/homebrew/bin` and `/usr/local/bin`. A folder found that way is put on PATH, so the gates' own ffmpeg and ffprobe calls find it too. With none at all they print `NO_FFMPEG: no ffmpeg on this machine; see the encode ladder in references/engine.md` and exit 1 (seen with ffmpeg taken off PATH).
+Every stage writes `build.json` once its refusals are past; the proof has none. Both stages that need ffmpeg look for it on PATH, then in `/opt/homebrew/bin` and `/usr/local/bin`. A folder found that way is put on PATH, so the gates' own ffmpeg and ffprobe calls find it too. With none at all they print `NO_FFMPEG: no ffmpeg on this machine. Every rung of the encode ladder needs one: install an ffmpeg with libx264, then check it with setup.sh` and exit 1, leaving the folder as it was (seen with ffmpeg taken off PATH).
 
 ### proof
 
@@ -204,7 +204,7 @@ It runs the gates that need no file: `qa.proof_rows` (Q501 on frame 0, the text 
 - `--keep-frames`: every frame is also kept as PNG in `frames/`;
 - `--redraw T0-T1[,T0-T1]`: only with `--keep-frames`; it draws those passages again and reads the rest back from `frames/`. Without `--keep-frames` the stage stops with `--redraw needs --keep-frames (and frames/ from an earlier --keep-frames run)` (exit 2).
 
-It first deletes `mix_raw.wav`, `sfx.wav`, `cuesheet.json`, `cue_sounds.npz`, `mix.wav`, `OUT`, `video.mp4`, `video.mp4.log`, `frames.hash`, `thumbs.npy` and every `*.rejected.mp4` and `*.unchecked.mp4`, so a failed run never leaves an older file to be reviewed. `frames/` is left alone; `--keep-frames` without `--redraw` empties it.
+Once its refusals are past (no ffmpeg, or a size budget too small for the audio), it deletes `mix_raw.wav`, `sfx.wav`, `cuesheet.json`, `cue_sounds.npz`, `mix.wav`, `OUT`, `video.mp4`, `video.mp4.log`, `frames.hash`, `thumbs.npy` and every `*.rejected.mp4` and `*.unchecked.mp4`, so a failed run never leaves an older file to be reviewed. `frames/` is left alone; `--keep-frames` without `--redraw` empties it.
 
 Then it renders the picture into `video.mp4` (see the next section) and delivers:
 
@@ -225,7 +225,7 @@ It makes the sound again, then masters, muxes and runs every gate on the `video.
 - when there is no `video.mp4`: `` no video.mp4 here: run `run_all.py full` first ``;
 - when the picture no longer matches the flags or the source (`picture_is_current`). Either `frames.hash` records another size, rate, SS or frame count (`video.mp4 was rendered at 640x360, 30 fps, SS 1, 240 frames; this run is 1920x1080, 30 fps, SS 1, 240 frames: pass the same --size, --fps and --ss, or run run_all.py full`), or up to 12 frames, the first, middle and last of every `SCHEDULE` span, drawn again do not hash as `frames.hash` says (from the code: `video.mp4 predates scenes.py: frame <i> (<t> s) and <n> more of <m> checked differ from frames.hash (or its size, fps, SS or length): run run_all.py full`).
 
-The second refusal comes after the clean-up. A refused audio run has already deleted `out.mp4`, `mix.wav` and the other audio files, and has rewritten `build.json` with the size it was given (seen on 2026-11-01). Run it again with the build's own flags; `python run_all.py audio --size 640x360` then brought back a DELIVERED line.
+Both refusals come before the clean-up and before `build.json` is written, so a refused run leaves the last build as it was. On 2026-11-01 an audio run at 1920x1080 on a 640x360 build was refused and left `out.mp4`, `mix.wav`, `mix_raw.wav`, `video.mp4`, `frames.hash`, `thumbs.npy` and `build.json` byte for byte the same; `python run_all.py audio --size 640x360` then ended with a DELIVERED line.
 
 ### The lines a stage prints
 

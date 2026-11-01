@@ -93,7 +93,7 @@ Only into a folder named with `--scenes` (`Ctx.record`):
 
 ### ffmpeg and the decode
 
-`contract.find_ffmpeg` takes the ffmpeg on PATH, else `/opt/homebrew/bin/ffmpeg`, else `/usr/local/bin/ffmpeg`, and ffprobe is the file beside it with the same name pattern. `run_all.py` has its own finder with the same places, and puts that folder on PATH. Every gate module reads the file through one `contract.Ctx`, decoded once per need with stdin closed: RGB at 192x108 as a player shows it (`DECODE_709`), linear light at 192x108 for the flash gate (`DECODE_LINEAR`), grey from that RGB, and the audio at the rate a gate asks for. Each picture decode must hold every frame ffprobe counts, within 1 (`Ctx._counted`): a short decode raises, so the gate module that asked reports Q100, or Q503 reads NOT CHECKED, rather than a gate passing on part of the film. The full-size decodes of frame 0 and the last frame for Q501 and Q502 (`qa.frame_grey`) are not guarded: a file whose last second will not decode stops `qa.py check` with a traceback and exit 1.
+`contract.find_ffmpeg` takes the ffmpeg on PATH, else `/opt/homebrew/bin/ffmpeg`, else `/usr/local/bin/ffmpeg`, and ffprobe is the file beside it with the same name pattern. `run_all.py` has its own finder with the same places, and puts that folder on PATH. Every gate module reads the file through one `contract.Ctx`, decoded once per need with stdin closed: RGB at 192x108 as a player shows it (`DECODE_709`), linear light at 192x108 for the flash gate (`DECODE_LINEAR`), grey from that RGB, and the audio at the rate a gate asks for. Each picture decode must hold every frame ffprobe counts, within 1 (`Ctx._counted`): a short decode raises, so the gate module that asked reports Q100, or Q503 reads NOT CHECKED, rather than a gate passing on part of the film. The full-size decodes of frame 0 and the last frame for Q501 and Q502 (`qa.frame_grey`) say NOT CHECKED when they fail, as Q503 does, so a file whose last second will not decode ends with a NOT CHECKED verdict, not a traceback.
 
 ## The codes
 
@@ -198,11 +198,11 @@ Q404 counts as ink the pixels within 24 levels of `fg` inside the box padded by 
 
 | Code | Gate | Module | Fails as | Catches |
 |---|---|---|---|---|
-| Q501 | 5 | qa | FIX | Frame 0 has a grey mean of 25 or less (dark) or a standard deviation of 12 or less (flat) |
-| Q502 | 5 | qa | FIX | The last frame has a grey mean of 25 or less (a fade to black) |
+| Q501 | 5 | qa | FIX | Frame 0 has a grey mean of 25 or less (dark) or a standard deviation of 12 or less (flat). NOT CHECKED when frame 0 does not decode |
+| Q502 | 5 | qa | FIX | The last frame has a grey mean of 25 or less (a fade to black). NOT CHECKED when the last frame does not decode (a cut or damaged file) |
 | Q503 | 5 | qa | NOTE | The last frame differs from the frame 1 s before it by 10/255 or more on average: the end card is not held 1 s |
 
-At the proof Q501 reads the drawn frame 0 (`qa.first_frame`); on the file it decodes frame 0 at full size as a player shows it (`qa.frame_grey`, grey 0.299 R + 0.587 G + 0.114 B). Q502 decodes the last frame from the final second. Q503 compares the last frame with the one `round(fps)` frames before it on the 64x36 block grey of the decode, and is NOT CHECKED when that decode fails or comes back short. Template at 1920x1080, 2026-11-01: frame 0 mean 71.0 and std 16.7 drawn, 70.3 and 16.9 decoded; last frame mean 61.5; last second change 0.4/255 (at 1080x1920: 69.9 and 16.6 drawn, 69.2 and 16.7 decoded, 61.5, 0.5/255).
+At the proof Q501 reads the drawn frame 0 (`qa.first_frame`); on the file it decodes frame 0 at full size as a player shows it (`qa.frame_grey`, grey 0.299 R + 0.587 G + 0.114 B). Q502 decodes the last frame from the final second. Q503 compares the last frame with the one `round(fps)` frames before it on the 64x36 block grey of the decode, and is NOT CHECKED when that decode fails or comes back short. The selftest case `files.cut` cuts a clean file to 35 percent of its bytes: Q501 passes, and Q502 and Q503 read NOT CHECKED. Template at 1920x1080, 2026-11-01: frame 0 mean 71.0 and std 16.7 drawn, 70.3 and 16.9 decoded; last frame mean 61.5; last second change 0.4/255 (at 1080x1920: 69.9 and 16.6 drawn, 69.2 and 16.7 decoded, 61.5, 0.5/255).
 
 ### Gate 7: what ffprobe reports
 
@@ -505,7 +505,7 @@ Scratch template runs, 2026-11-01: `CALIB: PASS (3 checks, 0 FIX, 0 NOTE, 0 NOT 
 
 **EXPECTED_GAPS** in `qa_selftest.py` is a dict of code to the reason no fixture can make it fire on this machine. It is empty today: every code has a fixture.
 
-**Today.** `SELFTEST: PASS (144 fixtures, 58 of 58 codes covered, 0 expected gaps)` in 49.2 s, with the template controls `PROOF: PASS (23 checks, 0 FIX, 0 NOTE, 0 NOT CHECKED)` and `QA: PASS (49 checks, 0 FIX, 0 NOTE, 0 NOT CHECKED), exit 0, DELIVERED` at both sizes (2026-11-01). The 144 are the judged lines: every want of every case plus the four template runs.
+**Today.** `SELFTEST: PASS (147 fixtures, 58 of 58 codes covered, 0 expected gaps)` in 55.5 s, with the template controls `PROOF: PASS (23 checks, 0 FIX, 0 NOTE, 0 NOT CHECKED)` and `QA: PASS (49 checks, 0 FIX, 0 NOTE, 0 NOT CHECKED), exit 0, DELIVERED` at both sizes (2026-11-01). The 147 are the judged lines: every want of every case plus the four template runs.
 
 **What it proves, and what it does not.** It proves that every code can still fire on the right item, time and value, that its known-good inputs stay clean, and that the template passes at 16:9 and 9:16 on this machine's ffmpeg, fonts and libraries. It does not prove that a gate catches a fault unlike its fixtures, how often a gate flags a real film by mistake, or anything about how a video looks or sounds. `--quick` skips the `full` renders, and `--only` runs no template control at all.
 
@@ -538,7 +538,7 @@ APPROVAL: none yet -> final review, then qa.py approve
 DELIVERED <working folder>/out.mp4 (0.4 MB, 8.00 s, -14.1 LUFS, -1.8 dBTP)
 QA: PASS (44 checks, 0 FIX, 0 NOTE, 0 NOT CHECKED)
 wrote review/audio.png (1600x656) in 1.4 s: I -14.1 LUFS, TP -1.8 dBTP, 0 of 80 frames over -1 dBTP; sync: 2 within 1 frame (of 2 audio cues)
-SELFTEST: PASS (144 fixtures, 58 of 58 codes covered, 0 expected gaps)
+SELFTEST: PASS (147 fixtures, 58 of 58 codes covered, 0 expected gaps)
 ```
 
 The first five lines are `run_all.py proof` and `full`; the 49 rows of `full` are the 44 of `qa.py check` plus Q805 and the four scans of `thumbs.npy`. The sixth is `qa.py check out.mp4 --scenes . --size WxH --fps 30 --bpm 120 --json qa.json`, the seventh `qa.py audiostrip out.mp4 --scenes .` (1.1 s at 1080x1920), the last `qa.py selftest`. The proof's 23 rows are Q501, nine text gates, the five recorder codes, Q1201 and the seven lint rows. The same file with no `--scenes` and no build files beside it gave `QA: PASS (23 checks, 0 FIX, 1 NOTE, 0 NOT CHECKED)`, the NOTE being Q804's missing cue sheet.

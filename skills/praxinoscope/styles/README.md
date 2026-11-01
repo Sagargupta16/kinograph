@@ -44,7 +44,7 @@ A style card is the recipe for one kind of video. The scenario names one in its 
 
 ## Fonts
 
-Fonts are not bundled. Each card names two families under the SIL Open Font License, one for each of the engine's slots: `E.FONT_BOLD` (`bold=True`) and `E.FONT_REG` (`bold=False`). Put their paths first at the top of scenes.py, at import time, which the lint passes: `E.FONT_BOLD[:0] = [...]` and `E.FONT_REG[:0] = [...]`, followed by the card's fallbacks for the OS.
+Fonts are not bundled. Each card names two families under the SIL Open Font License, one for each of the engine's slots: `FONT_BOLD` (`bold=True`) and `FONT_REG` (`bold=False`). Put their paths first at the top of scenes.py, at import time, which the lint passes: `FONT_BOLD[:0] = [...]` and `FONT_REG[:0] = [...]`, followed by the card's fallbacks for the OS. The template's `from engine import *` brings in the engine's own two lists, so these lines change the lists `engine.font` reads.
 
 Use one static file per weight. `engine.font` opens a variable file (a `[wght]` in its name) at its default instance: Windows' variable `bahnschrift.ttf` drew the same ink as its Regular instance on Pillow 13.0.0, and its Bold instance 27 percent more, only after `set_variation_by_name` (checked 2026-10-31). Every family below sits in the `ofl/` tree of the google/fonts repository with its `OFL.txt`; static files, checked 2026-11-01:
 

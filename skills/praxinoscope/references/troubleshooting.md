@@ -22,7 +22,7 @@ Every quoted line was printed by a run on 2026-11-01, on the shipped template or
 | `no video.mp4 here`, `video.mp4 was rendered at`, `video.mp4 predates scenes.py` | `run_all.py audio` | [Stage refusals](#stage-refusals) |
 | `--redraw needs --keep-frames`, `frames/ lacks` | `run_all.py full --redraw` | [Stage refusals](#stage-refusals) |
 | `a <N> MB budget leaves no video bitrate` | `run_all.py full` with a size budget | [Stage refusals](#stage-refusals) |
-| `not checked here:`, `FIX  Q1105`, `NOT CHECKED Q100`, a traceback through `frame_grey` | `qa.py check` | [Checking a file by hand](#checking-a-file-by-hand) |
+| `not checked here:`, `FIX  Q1105`, `NOT CHECKED Q100`, `NOT CHECKED Q502 the last frame did not decode` | `qa.py check` | [Checking a file by hand](#checking-a-file-by-hand) |
 | `REFUSED:`, `CANNOT APPROVE`, `STALE APPROVAL`, `APPROVAL: stale`, `DIFF:`, `VERIFY:` | `qa.py approve`, `check`, `diff`, `verify`, and the end of `full` | [Approval, diff and verify](#approval-diff-and-verify) |
 | `warning: STATIC`, or no error at all: a render that takes too long, a file over its budget | | [Slow builds and big files](#slow-builds-and-big-files) |
 
@@ -34,7 +34,7 @@ Every row prints as its status, its code and its message, then `[worst <t> s]` w
 
 **`uv: command not found`.** Every engine command runs through uv, so nothing runs without it (seen with uv taken off PATH: the shell's own message, exit 127). Install uv, open a new shell and run `setup.sh` again.
 
-**`NO_FFMPEG: no ffmpeg on this machine; see the encode ladder in references/engine.md`** (exit 1, seen with ffmpeg taken off PATH). `run_all.find_ffmpeg` looks on PATH, then at `/opt/homebrew/bin/ffmpeg` and `/usr/local/bin/ffmpeg`. `qa.py check` and `qa.py look` stop the same way with `qa.py: no ffmpeg on PATH (nor in /opt/homebrew/bin or /usr/local/bin)` (exit 1, seen). The proof stage needs no ffmpeg. `full`, `audio`, the master (`audio.master` measures loudness with ffmpeg's ebur128) and every gate on a file do. Install an ffmpeg build with libx264 and ffprobe, check that `ffmpeg -version` runs in the same shell the build runs in, then run `setup.sh`.
+**`NO_FFMPEG: no ffmpeg on this machine. Every rung of the encode ladder needs one: install an ffmpeg with libx264, then check it with setup.sh`** (exit 1, seen with ffmpeg taken off PATH; the folder is left as it was). `run_all.find_ffmpeg` looks on PATH, then at `/opt/homebrew/bin/ffmpeg` and `/usr/local/bin/ffmpeg`. `qa.py check` and `qa.py look` stop the same way with `qa.py: no ffmpeg on PATH (nor in /opt/homebrew/bin or /usr/local/bin)` (exit 1, seen). The proof stage needs no ffmpeg. `full`, `audio`, the master (`audio.master` measures loudness with ffmpeg's ebur128) and every gate on a file do. Install an ffmpeg build with libx264 and ffprobe, check that `ffmpeg -version` runs in the same shell the build runs in, then run `setup.sh`.
 
 **An ffmpeg without libx264.** The render pipes every frame into a libx264 encode (`render.encode_cmd`), so `full` stops at the first frame with `RuntimeError: ffmpeg stopped after 1 of 240 frames (exit <code>): ...`, followed by ffmpeg's own lines. A scratch copy with the encoder name changed printed `Unknown encoder 'libx264_absent'` and `Encoder not found` there. `ffmpeg -hide_banner -encoders` lists what your build has. Without libx264, follow the encode ladder in [engine.md](engine.md) (PNG frames, then AV1 in MP4 or VP9 in WebM) and say which rung made the file. Every rung still needs ffmpeg, for the master and for the encode. `qa.py check` then gives Q705, Q707 and Q708 as NOT CHECKED on a file that is not H.264, and on an H.264 file Q708 reads `colour round trip could not run: the libx264 encode or the decode of the swatch clip failed` when this ffmpeg cannot encode libx264 (`qa.check`). The delivery report lists those rows as not checked ([delivery.md](delivery.md)).
 
@@ -161,7 +161,7 @@ Any other exception from a worker belongs to the frame: your `draw(t)` failed at
 - `video.mp4 was rendered at 640x360, 30 fps, SS 1, 240 frames; this run is 1920x1080, 30 fps, SS 1, 240 frames: pass the same --size, --fps and --ss, or run run_all.py full` (seen): the flags are not the render's. Run `audio` again with the render's own flags.
 - `video.mp4 predates scenes.py: frame 150 (5.00 s) and 2 more of 9 checked differ from frames.hash (or its size, fps, SS or length): run run_all.py full` (seen after a change to the end card's ground colour): the picture changed since the render. `picture_is_current` draws the first, middle and last frame of each scene again, at most 12, and compares them with `frames.hash`. Run `full`.
 
-The two picture refusals come after the stage's clean-up. By then `out.mp4`, `mix.wav` and the other audio files are deleted and `build.json` holds the flags of the refused run (seen: of the video and sound files, only `video.mp4` was left). The next good run makes them again.
+Every refusal comes before the stage's clean-up and before `build.json` is written, so the last build is left as it was (seen: after the size refusal, `out.mp4`, the mixes, `video.mp4`, `frames.hash`, `thumbs.npy` and `build.json` were byte for byte the same).
 
 `run_all.py full --redraw T0-T1`:
 
@@ -170,7 +170,7 @@ The two picture refusals come after the stage's clean-up. By then `out.mp4`, `mi
 
 Frames read back from `frames/` are checked for size only. A PNG left from an older `scenes.py` goes into the film unseen until `qa.py approve`, `qa.py diff` or `run_all.py audio` draws key frames again, so redraw every passage a change touches.
 
-`a 0.3 MB budget leaves no video bitrate for 8 s with 320 kb/s of audio` (seen with `--budget-mb 0.3`, exit 1): the budget cannot hold even the AAC audio (`run_all.caps`). The check comes after the clean-up, so the last render's `out.mp4`, `video.mp4`, `frames.hash` and `thumbs.npy` are gone too (seen). Ask for the real limit, or shorten the piece; the formula is in [formats.md](formats.md).
+`a 0.3 MB budget leaves no video bitrate for 8 s with 320 kb/s of audio` (seen with `--budget-mb 0.3`, exit 1): the budget cannot hold even the AAC audio (`run_all.caps`). The check comes before the clean-up, so the last render is left as it was (seen). Ask for the real limit, or shorten the piece; the formula is in [formats.md](formats.md).
 
 ## Checking a file by hand
 
@@ -178,7 +178,7 @@ Frames read back from `frames/` are checked for size only. A PNG left from an ol
 
 **`FIX  Q1105 decoded file against the drawn frames: worst 60.95 levels mean at 7.97 s, 30 of 240 frames over 4`**, on a file that is not broken. Without `--scenes`, `qa.py check` takes the file's own folder as the build folder (`contract.Ctx`), and Q1105 compares the file with the `thumbs.npy` it finds there. Seen when a file from another build was copied into a working folder and checked there. A Q1105 like that means the `thumbs.npy` beside the file belongs to another render: check each file in its own working folder, after the render that made it. The same goes for an encode ladder file checked beside an older render's `frames.hash` and `thumbs.npy` ([engine.md](engine.md), rung b).
 
-**A traceback from `qa.py check` through `frame_grey`**, ending in `ValueError: cannot reshape array of size 0 into shape (360,640,3)` or in `subprocess.CalledProcessError`. Seen on a copy of the template cut to half its bytes, and on one whose middle was zeroed: ffmpeg could not decode the last second, which Q502 reads. The file is damaged or incomplete, such as a copy that had not finished or a render stopped half way. Render it again, and never check a partial copy.
+**`NOT CHECKED Q502  the last frame did not decode (...), so it was not measured`** (Q501 says the same of the first frame). Seen on 2026-11-01 on a copy of the template cut to 40 percent of its bytes, with `NOT CHECKED Q503  the decode failed (decoded 88 of the 240 frames ffprobe counts in ...)`, a Q100 row for `qa_scan`, and `QA: NOT CHECKED (3)`, exit 2. ffprobe still counts every frame, but ffmpeg cannot decode the end of the file. The file is damaged or incomplete, such as a copy that had not finished or a render stopped half way. Render it again, and never check a partial copy.
 
 **A short decode.** Every decode the gates make must hold each frame ffprobe counts, within 1 (`contract.Ctx._counted`). When it does not, the decode raises `decoded <k> of the <n> frames ffprobe counts in <file>`, the gate modules that asked for it give Q100 rows and Q503 reads NOT CHECKED, rather than a gate passing on part of the film (code). Treat it as a damaged file.
 

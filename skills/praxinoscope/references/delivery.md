@@ -54,7 +54,7 @@ Next options:
 | Resolution, fps, codec | ffprobe's `width`, `height`, `r_frame_rate` and `codec_name` (rung a is h264 with aac) |
 | Loudness | The `DELIVERED` line, and the ebur128 Summary. A silent piece says `silent` there and in the report |
 | Encode | Which rung of the ladder made the file and why (`formats.md`): rung a needs nothing more than "libx264 present"; rung b names the missing libx264 and the encoder used; rung c says the GIF is a preview |
-| Checked | The `PROOF:` and `QA:` summary lines, as printed (`QA: PASS (49 checks, 0 FIX, 0 NOTE, 0 NOT CHECKED)` on the template, 2026-11-01); every reviewer id with its verdict; the `APPROVAL:` line; `VERIFY: SAME` |
+| Checked | The `PROOF:` and `QA:` summary lines, as printed (on the template, 2026-11-01: `QA: PASS (49 checks, 0 FIX, 0 NOTE, 0 NOT CHECKED)` from `run_all.py full`, and `QA: PASS (44 checks, ...)` from `qa.py check`, which makes no Q805 row and does not scan `thumbs.npy`); every reviewer id with its verdict; the `APPROVAL:` line; `VERIFY: SAME` |
 | Not checked | Always the two lines above about people and photosensitivity; then every `NOT CHECKED` row (on rung b, Q705, Q707 and Q708 by design) and anything skipped, such as a platform's own overlay zones (`formats.md`) or a voice engine's word clock on a voice nobody measured (`voice.md`) |
 | Weak spots | Every NOTE row in the final check and why it stays (an `ALLOW` entry says it was designed), every reviewer P1 or P2 finding left open, and a true peak inside -1 dBTP but within the meter tolerance (run_all prints a `note:` line for that) |
 | Sources | The scenario's Facts table: each claim on screen, its source and the date it was read. A claim with no source is not on screen |
