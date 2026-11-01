@@ -25,12 +25,16 @@ Then ask for a video, for example `/praxinoscope:praxinoscope a 30 second launch
 
 ## How a video gets made
 
+![How praxinoscope makes a video: the main chat, the builder and reviewer agents and the gates, from brief to delivered file](docs/praxinoscope-flow.svg)
+
 1. **Brief and style.** At most three questions (purpose, length and aspect, sound), then two or three of the styles with a recommendation.
 2. **Storyboard gate.** A table of time, beat, visuals, on-screen text and audio. `qa.py holds` checks that every line stays on screen long enough to read. Nothing is built until you approve it.
 3. **Proof.** The `praxinoscope:builder` agent copies the engine, writes `scenes.py` (every frame a pure function of time) and the score, and renders review sheets. The proof gates check the first frame, every drawn string against its registry, purity across processes, and a lint.
 4. **Proof review.** The `praxinoscope:reviewer` agent sees only the storyboard and the sheets, never the builder's report. It returns REVIEW PASS, or REVIEW FIX with findings ranked P0 to P2.
 5. **Render.** Every frame goes straight into one H.264 encode. The sound is synthesized and mastered to -14 LUFS, then every gate runs on the encoded file.
 6. **Final review and approval.** A fresh reviewer checks the file. `qa.py approve` binds that review to the file's content hashes, so any later change reopens review by itself.
+
+The diagram's source is `docs/praxinoscope-flow.workflow.json`, an archify workflow in which every box cites the file and lines it comes from.
 
 ## Styles
 
