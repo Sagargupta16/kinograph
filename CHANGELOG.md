@@ -2,6 +2,12 @@
 
 Every change, newest first, under the version that shipped it.
 
+## 0.1.1 - 2026-11-01
+
+- **The reviewer agent and two references, rewritten from the code.** `agents/reviewer.md`, `references/qa-gates.md` and `references/engine.md` are new text, written from the engine's code and from runs of the shipped template on 2026-11-01. Every number in them is read from the code (the constant or function is named) or dated to those runs; claims that could not be re-measured were dropped.
+- **Reviewer.** The reply block keeps every field `qa.py approve` reads (verdict, `stage:`, `file:` with its written time, `reviewer:`, `frames seen:`), and a final-stage REVIEW PASS in the new format approves the template build. The reviewer now writes its own `qa.py check --json` to `review/qa_<id>.json`, so the builder's `qa.json` (the baseline approve keeps) stays as it was. It reports stale sheets or a `.rejected` or `.unchecked` file as a P0, ranks an undeclared change from `qa.py diff` as P1, and has its own finding codes, `R-STORY` to `R-FILE`.
+- **qa-gates.md** gives every one of the 58 codes its module, gate, failure status and real thresholds, which step makes each code (`qa.py check` makes 47 of them), every `qa.py` subcommand with the flags its `--help` lists, and the self test's 2026-11-01 result: `SELFTEST: PASS (144 fixtures, 58 of 58 codes covered, 0 expected gaps)`.
+- **engine.md** lists every engine file, the `compile_schedule` rules with each error it raises, the three stages and the lines they print, how the render moves frames, the files a build writes with their `contract.py` names, how to plug in a score of your own, and the encode ladder. Every command in it was run once on the template, including the AV1, VP9 and GIF rungs.
 ## 0.1.0 - 2026-10-31
 
 First public release.
