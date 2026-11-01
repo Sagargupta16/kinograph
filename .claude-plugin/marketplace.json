@@ -12,7 +12,7 @@
       "name": "praxinoscope",
       "source": "./",
       "description": "The praxinoscope skill: six original styles, a builder and a reviewer agent, a Python engine that draws every frame as a pure function of time, numpy music and sound effects mastered to -14 LUFS, and 58 coded QA checks.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "license": "MIT",
       "category": "design"
     }

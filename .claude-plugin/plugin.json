@@ -1,7 +1,7 @@
 {
   "name": "praxinoscope",
   "displayName": "Praxinoscope",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Plan, storyboard, animate, score and render short videos (MP4, WebM, GIF) from code with Python, Pillow, numpy and ffmpeg. One skill with six original styles, a builder agent and a fresh-eyes reviewer agent, a frame-exact engine, 58 coded QA checks proven by planted-fault self tests, and approval bound to the file's content hashes.",
   "author": {
     "name": "Sagar Gupta",

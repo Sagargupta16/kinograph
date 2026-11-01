@@ -65,7 +65,7 @@ Every pair clears 4.5:1, so any pair may carry text at any size. A brand colour 
 ## Build notes
 
 - `TIMELINE = [Scene("hook", 8), Scene("idea1", 8), Scene("idea2", 8), Scene("idea3", 8), Transition("push", 1), Scene("end", 8)]` in beats, `compile_schedule(TIMELINE, bpm=BPM)`.
-- Fonts: at the top of scenes.py, `E.FONT_BOLD[:0] = [...]` and `E.FONT_REG[:0] = [...]` with the Inter files first, then the fallbacks.
+- Fonts: at the top of scenes.py, `FONT_BOLD[:0] = [...]` and `FONT_REG[:0] = [...]` with the Inter files first, then the fallbacks.
 - Helpers: `canvas`, `rrect`, `shadow`, `text`, `text_box`, `fit_size` (headline against `W * 0.52`, `W * 0.84` at 9:16), `wrap`, `prog`, `lerp`, `ease_out_expo`, `ease_in_cubic`, `ease_in_out_cubic`, `spring`, `scenes_at`, `transitions.push`.
 - Time exits to the cut in `CUTS`, not to the scene's `SCHEDULE` end: inside the push window idea 3 is still drawn past 16.0, so its text leaves by 15.5.
 - One `layout(t)` feeds `draw()` and `text_items()`. Register the name, promise, headlines, panel labels, call to action and address. Filler copy inside a mock panel is `texture=True` and under 24 px at 1080; the cursor and toggles are shapes.

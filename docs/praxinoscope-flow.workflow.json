@@ -5,46 +5,48 @@
     "title": "How praxinoscope makes a video",
     "locale": "en",
     "quality_profile": "showcase",
-    "output": "outputs/archify/praxinoscope-flow.html",
+    "output": "docs/praxinoscope-flow.html",
     "repository": {
       "url": "https://github.com/Sagargupta16/praxinoscope.git",
-      "provider": "github",
-      "link_mode": "web",
-      "revision": "beef4c94eeaf72aeb8925b02372dd58cb29b80bb"
+      "revision": "038f36b41d3569aaa6fe864a999de8c64d2a7bcf"
     },
     "legend": {
       "entries": {
+        "external": {
+          "label": "Your step"
+        },
         "frontend": {
           "label": "Main chat step"
         },
         "backend": {
-          "label": "Agent work"
+          "label": "Agent step"
         },
         "security": {
-          "label": "Gate or review"
-        },
-        "database": {
-          "label": "Saved approval"
+          "label": "Coded gate"
         }
       }
     }
   },
   "lanes": [
     {
+      "id": "you",
+      "label": "You"
+    },
+    {
       "id": "chat",
-      "label": "Main chat (/praxinoscope:praxinoscope)"
+      "label": "Main chat"
     },
     {
       "id": "builder",
-      "label": "praxinoscope:builder agent"
-    },
-    {
-      "id": "reviewer",
-      "label": "praxinoscope:reviewer agent"
+      "label": "Builder agent"
     },
     {
       "id": "gates",
-      "label": "Gates (qa.py + contract.py)"
+      "label": "Engine gates"
+    },
+    {
+      "id": "reviewer",
+      "label": "Reviewer agent"
     }
   ],
   "phases": [
@@ -55,72 +57,139 @@
       "toCol": 1
     },
     {
-      "id": "proofphase",
+      "id": "proofing",
       "label": "Proof",
       "fromCol": 2,
-      "toCol": 3,
-      "variant": "emphasis"
+      "toCol": 3
     },
     {
-      "id": "renderphase",
-      "label": "Render + deliver",
+      "id": "film",
+      "label": "Film",
       "fromCol": 4,
       "toCol": 5
     }
   ],
   "mainPath": [
+    "ask",
     "brief",
-    "storyboard",
+    "board",
+    "ok_board",
     "proof",
-    "proofreview",
-    "proofok",
+    "proof_gates",
+    "proof_review",
+    "ok_proof",
     "render",
-    "finalreview",
-    "approved",
-    "deliver"
+    "file_gates",
+    "final_review",
+    "approve",
+    "delivered"
   ],
+  "semanticChecks": {
+    "allowedRoots": [
+      "ask"
+    ],
+    "allowedTerminals": [
+      "delivered"
+    ],
+    "requiredEdges": [
+      {
+        "from": "ok_board",
+        "to": "proof"
+      },
+      {
+        "from": "ok_proof",
+        "to": "render"
+      },
+      {
+        "from": "final_review",
+        "to": "approve"
+      }
+    ]
+  },
   "nodes": [
+    {
+      "id": "ask",
+      "lane": "you",
+      "col": 0,
+      "type": "external",
+      "icon": "person",
+      "label": "Ask for a video",
+      "sublabel": "one line is enough",
+      "sources": [
+        {
+          "path": "README.md",
+          "line": 14,
+          "end_line": 14,
+          "label": "ask, then two stops"
+        }
+      ]
+    },
     {
       "id": "brief",
       "lane": "chat",
       "col": 0,
       "type": "frontend",
-      "label": "Brief + style pick",
-      "sublabel": "3 questions, 6 styles",
+      "label": "Brief and style",
+      "sublabel": "3 questions at most",
+      "tag": "6 style cards",
       "sources": [
         {
           "path": "skills/praxinoscope/SKILL.md",
           "line": 37,
-          "end_line": 43,
-          "label": "brief"
-        },
-        {
-          "path": "skills/praxinoscope/SKILL.md",
-          "line": 45,
           "end_line": 56,
-          "label": "style pick"
+          "label": "steps 1 and 2"
         }
       ]
     },
     {
-      "id": "storyboard",
+      "id": "board",
       "lane": "chat",
       "col": 1,
-      "type": "security",
-      "label": "Storyboard gate",
-      "sublabel": "qa.py holds, you approve",
+      "type": "frontend",
+      "label": "Storyboard",
+      "sublabel": "sourced facts, timed lines",
+      "tag": "qa.py holds",
       "sources": [
         {
           "path": "skills/praxinoscope/SKILL.md",
           "line": 58,
           "end_line": 66,
-          "label": "storyboard gate"
+          "label": "step 3"
         },
         {
           "path": "skills/praxinoscope/engine/qa.py",
           "line": 210,
-          "end_line": 293,
+          "end_line": 214,
           "label": "storyboard_holds"
+        },
+        {
+          "path": "skills/praxinoscope/engine/qa.py",
+          "line": 1789,
+          "end_line": 1805,
+          "label": "holds command"
+        }
+      ]
+    },
+    {
+      "id": "ok_board",
+      "lane": "you",
+      "col": 1,
+      "type": "external",
+      "icon": "decision",
+      "label": "Approve storyboard",
+      "sublabel": "first stop",
+      "sources": [
+        {
+          "path": "skills/praxinoscope/SKILL.md",
+          "line": 66,
+          "end_line": 66,
+          "label": "nothing built before"
+        },
+        {
+          "path": "README.md",
+          "line": 31,
+          "end_line": 31,
+          "label": "storyboard gate"
         }
       ]
     },
@@ -130,8 +199,31 @@
       "col": 2,
       "type": "backend",
       "label": "Proof build",
-      "sublabel": "scenes.py, run_all.py proof",
-      "tag": "PROOF line",
+      "sublabel": "scenes.py and score",
+      "tag": "run_all.py proof",
+      "sources": [
+        {
+          "path": "skills/praxinoscope/SKILL.md",
+          "line": 68,
+          "end_line": 70,
+          "label": "step 4"
+        },
+        {
+          "path": "agents/builder.md",
+          "line": 41,
+          "end_line": 54,
+          "label": "proof mode, fix lists"
+        }
+      ]
+    },
+    {
+      "id": "proof_gates",
+      "lane": "gates",
+      "col": 2,
+      "type": "security",
+      "label": "Proof gates",
+      "sublabel": "frame 0, text, purity, lint",
+      "tag": "PROOF: PASS",
       "sources": [
         {
           "path": "skills/praxinoscope/engine/run_all.py",
@@ -140,82 +232,69 @@
           "label": "proof_stage"
         },
         {
-          "path": "agents/builder.md",
-          "line": 41,
-          "end_line": 50,
-          "label": "proof mode"
-        }
-      ]
-    },
-    {
-      "id": "proofgates",
-      "lane": "gates",
-      "col": 2,
-      "type": "security",
-      "label": "Proof gates",
-      "sublabel": "registry, purity, lint",
-      "sources": [
-        {
           "path": "skills/praxinoscope/engine/qa.py",
           "line": 1237,
           "end_line": 1257,
           "label": "proof_rows"
         },
         {
-          "path": "skills/praxinoscope/engine/qa_purity.py",
-          "line": 466,
-          "end_line": 700,
-          "label": "purity"
-        },
-        {
-          "path": "skills/praxinoscope/engine/qa_lint.py",
-          "line": 1276,
-          "end_line": 1325,
-          "label": "lint"
+          "path": "skills/praxinoscope/references/qa-gates.md",
+          "line": 13,
+          "end_line": 13,
+          "label": "proof codes"
         }
       ]
     },
     {
-      "id": "proofreview",
+      "id": "proof_review",
       "lane": "reviewer",
-      "col": 3,
-      "type": "security",
+      "col": 2,
+      "type": "backend",
       "label": "Proof review",
-      "sublabel": "key cells, strips, gantt",
-      "sources": [
-        {
-          "path": "agents/reviewer.md",
-          "line": 44,
-          "end_line": 154,
-          "label": "review procedure"
-        },
-        {
-          "path": "skills/praxinoscope/engine/proof.py",
-          "line": 773,
-          "end_line": 794,
-          "label": "key sheet"
-        },
-        {
-          "path": "skills/praxinoscope/engine/proof.py",
-          "line": 116,
-          "end_line": 118,
-          "label": "contact sheet"
-        }
-      ]
-    },
-    {
-      "id": "proofok",
-      "lane": "chat",
-      "col": 3,
-      "type": "security",
-      "label": "Proof approval",
-      "sublabel": "you approve the sheet",
+      "sublabel": "sheets against storyboard",
+      "tag": "no builder report",
       "sources": [
         {
           "path": "skills/praxinoscope/SKILL.md",
           "line": 72,
           "end_line": 77,
-          "label": "proof review"
+          "label": "step 5"
+        },
+        {
+          "path": "agents/reviewer.md",
+          "line": 18,
+          "end_line": 26,
+          "label": "what the brief holds"
+        },
+        {
+          "path": "agents/reviewer.md",
+          "line": 41,
+          "end_line": 68,
+          "label": "proof stage"
+        }
+      ]
+    },
+    {
+      "id": "ok_proof",
+      "lane": "you",
+      "col": 3,
+      "type": "external",
+      "icon": "decision",
+      "label": "Approve proof",
+      "sublabel": "second stop",
+      "tag": "proof.png",
+      "sources": [
+        {
+          "path": "skills/praxinoscope/SKILL.md",
+          "line": 77,
+          "end_line": 81,
+          "label": "show proof, ask"
+        },
+        {
+          "path": "skills/praxinoscope/SKILL.md",
+          "line": 114,
+          "end_line": 114,
+          "label": "no render before"
         }
       ]
     },
@@ -224,89 +303,125 @@
       "lane": "builder",
       "col": 4,
       "type": "backend",
-      "label": "run_all.py full",
-      "sublabel": "frames, audio, master, mux",
-      "tag": "APPROVAL + DELIVERED",
+      "label": "Full render",
+      "sublabel": "frames, sound, mux",
+      "tag": "run_all.py full",
       "sources": [
+        {
+          "path": "agents/builder.md",
+          "line": 56,
+          "end_line": 61,
+          "label": "render mode"
+        },
+        {
+          "path": "skills/praxinoscope/engine/run_all.py",
+          "line": 121,
+          "end_line": 142,
+          "label": "picture"
+        },
         {
           "path": "skills/praxinoscope/engine/render.py",
           "line": 305,
-          "end_line": 397,
+          "end_line": 321,
           "label": "render_to_ffmpeg"
-        },
-        {
-          "path": "skills/praxinoscope/engine/audio.py",
-          "line": 278,
-          "end_line": 327,
-          "label": "master"
-        },
+        }
+      ]
+    },
+    {
+      "id": "file_gates",
+      "lane": "gates",
+      "col": 4,
+      "type": "security",
+      "label": "File gates",
+      "sublabel": "every gate on the MP4",
+      "tag": "FIX: .rejected.mp4",
+      "sources": [
         {
           "path": "skills/praxinoscope/engine/run_all.py",
           "line": 304,
           "end_line": 369,
           "label": "deliver"
-        }
-      ]
-    },
-    {
-      "id": "filegates",
-      "lane": "gates",
-      "col": 4,
-      "type": "security",
-      "label": "qa.py check",
-      "sublabel": "58 Q codes on the file",
-      "tag": "FIX: .rejected.mp4",
-      "sources": [
+        },
         {
           "path": "skills/praxinoscope/engine/qa.py",
           "line": 1315,
-          "end_line": 1556,
+          "end_line": 1329,
           "label": "check"
         },
         {
-          "path": "skills/praxinoscope/engine/contract.py",
-          "line": 719,
-          "end_line": 837,
-          "label": "Ctx"
+          "path": "skills/praxinoscope/references/qa-gates.md",
+          "line": 22,
+          "end_line": 27,
+          "label": "the verdict"
         }
       ]
     },
     {
-      "id": "finalreview",
+      "id": "final_review",
       "lane": "reviewer",
-      "col": 5,
-      "type": "security",
+      "col": 4,
+      "type": "backend",
       "label": "Final review",
-      "sublabel": "check, look, audiostrip",
+      "sublabel": "a new reviewer runs qa.py",
+      "tag": "frames and audio picture",
       "sources": [
+        {
+          "path": "skills/praxinoscope/SKILL.md",
+          "line": 83,
+          "end_line": 85,
+          "label": "step 7"
+        },
         {
           "path": "agents/reviewer.md",
-          "line": 44,
-          "end_line": 154,
-          "label": "final review"
+          "line": 70,
+          "end_line": 98,
+          "label": "final stage"
         }
       ]
     },
     {
-      "id": "approved",
-      "lane": "gates",
+      "id": "approve",
+      "lane": "chat",
       "col": 5,
-      "type": "database",
-      "label": "approved/",
-      "sublabel": "approve, diff, verify",
-      "tag": "per content hash",
+      "type": "security",
+      "label": "Approve by hash",
+      "sublabel": "qa.py approve",
+      "tag": "a change reopens review",
       "sources": [
         {
-          "path": "skills/praxinoscope/engine/qa_approve.py",
-          "line": 795,
-          "end_line": 1014,
-          "label": "approve"
+          "path": "skills/praxinoscope/SKILL.md",
+          "line": 87,
+          "end_line": 87,
+          "label": "approval"
         },
         {
           "path": "skills/praxinoscope/engine/qa_approve.py",
-          "line": 1590,
-          "end_line": 1893,
-          "label": "diff"
+          "line": 754,
+          "end_line": 786,
+          "label": "review refusals"
+        },
+        {
+          "path": "skills/praxinoscope/references/qa-gates.md",
+          "line": 450,
+          "end_line": 466,
+          "label": "approval"
+        }
+      ]
+    },
+    {
+      "id": "delivered",
+      "lane": "you",
+      "col": 5,
+      "type": "external",
+      "icon": "success",
+      "label": "Your video",
+      "sublabel": "path, specs, weak spots",
+      "sources": [
+        {
+          "path": "skills/praxinoscope/SKILL.md",
+          "line": 89,
+          "end_line": 95,
+          "label": "step 8"
         },
         {
           "path": "skills/praxinoscope/engine/qa_approve.py",
@@ -315,144 +430,145 @@
           "label": "verify"
         }
       ]
-    },
-    {
-      "id": "deliver",
-      "lane": "chat",
-      "col": 5,
-      "type": "frontend",
-      "label": "Deliver",
-      "sublabel": "VERIFY: SAME, report",
-      "sources": [
-        {
-          "path": "skills/praxinoscope/SKILL.md",
-          "line": 89,
-          "end_line": 95,
-          "label": "deliver"
-        }
-      ]
     }
   ],
   "edges": [
     {
-      "id": "e-brief",
+      "id": "e_ask",
+      "from": "ask",
+      "to": "brief"
+    },
+    {
+      "id": "e_style",
       "from": "brief",
-      "to": "storyboard",
-      "label": "scenario.md",
-      "variant": "default"
+      "to": "board"
     },
     {
-      "id": "e-board",
-      "from": "storyboard",
+      "id": "e_holds",
+      "from": "board",
+      "to": "ok_board",
+      "label": "HOLDS: OK"
+    },
+    {
+      "id": "e_go_proof",
+      "from": "ok_board",
       "to": "proof",
-      "label": "approved table",
+      "label": "approved",
       "variant": "emphasis"
     },
     {
-      "id": "e-proof-rows",
+      "id": "e_proof_run",
       "from": "proof",
-      "to": "proofgates",
-      "label": "PROOF rows",
-      "variant": "security",
-      "role": "branch",
-      "fromSide": "left",
-      "toSide": "left"
+      "to": "proof_gates"
     },
     {
-      "id": "e-proof-pass",
-      "from": "proof",
-      "to": "proofreview",
-      "label": "PROOF: PASS",
-      "variant": "emphasis"
+      "id": "e_sheets",
+      "from": "proof_gates",
+      "to": "proof_review",
+      "label": "sheets, rows"
     },
     {
-      "id": "e-proof-fix",
-      "from": "proofreview",
-      "to": "proof",
-      "label": "REVIEW FIX",
-      "variant": "security",
-      "role": "return"
+      "id": "e_proof_pass",
+      "from": "proof_review",
+      "to": "ok_proof",
+      "label": "REVIEW PASS"
     },
     {
-      "id": "e-proof-ok",
-      "from": "proofreview",
-      "to": "proofok",
-      "label": "REVIEW PASS",
-      "variant": "emphasis"
-    },
-    {
-      "id": "e-render",
-      "from": "proofok",
+      "id": "e_go_render",
+      "from": "ok_proof",
       "to": "render",
       "label": "render",
       "variant": "emphasis"
     },
     {
-      "id": "e-check",
+      "id": "e_render_run",
       "from": "render",
-      "to": "filegates",
-      "label": "every gate",
+      "to": "file_gates"
+    },
+    {
+      "id": "e_delivered",
+      "from": "file_gates",
+      "to": "final_review",
+      "label": "DELIVERED"
+    },
+    {
+      "id": "e_final_pass",
+      "from": "final_review",
+      "to": "approve",
+      "label": "REVIEW PASS"
+    },
+    {
+      "id": "e_verify",
+      "from": "approve",
+      "to": "delivered",
+      "label": "VERIFY: SAME"
+    },
+    {
+      "id": "e_proof_fix",
+      "from": "proof_gates",
+      "to": "proof",
+      "label": "FIX",
       "variant": "security",
-      "role": "branch"
+      "role": "error"
     },
     {
-      "id": "e-delivered",
-      "from": "render",
-      "to": "finalreview",
-      "label": "DELIVERED",
-      "variant": "emphasis"
+      "id": "e_proof_review_fix",
+      "from": "proof_review",
+      "to": "proof",
+      "label": "REVIEW FIX",
+      "variant": "dashed",
+      "role": "return"
     },
     {
-      "id": "e-approve",
-      "from": "finalreview",
-      "to": "approved",
-      "label": "qa.py approve",
-      "variant": "emphasis"
+      "id": "e_rejected",
+      "from": "file_gates",
+      "to": "render",
+      "label": "REJECTED",
+      "variant": "security",
+      "role": "error"
     },
     {
-      "id": "e-verify",
-      "from": "approved",
-      "to": "deliver",
-      "label": "verify SAME",
-      "variant": "emphasis"
+      "id": "e_final_fix",
+      "from": "final_review",
+      "to": "render",
+      "label": "REVIEW FIX",
+      "variant": "dashed",
+      "role": "return",
+      "fromSide": "left",
+      "toSide": "left"
     }
   ],
   "cards": [
     {
-      "dot": "amber",
-      "title": "Review loops",
+      "dot": "rose",
+      "title": "Nothing unchecked ships",
       "items": [
-        "REVIEW FIX at either stage goes back to the builder as one numbered list",
-        "3 rounds for a FIX row, 2 for a note, then the open items go to you",
-        "Any change after approval: qa.py diff --expect, then a fresh review"
+        "A FIX or NOT CHECKED row renames the file .rejected.mp4",
+        "A run that breaks leaves .unchecked.mp4; neither is delivered"
       ]
     },
     {
       "dot": "cyan",
-      "title": "Shared contract (contract.py)",
+      "title": "Reviews stay independent",
       "items": [
-        "One frame clock, frame_of, for every module",
-        "Row: PASS, FIX, NOTE, NOT CHECKED (exit 2)",
-        "58 Q codes, each with its owner module",
-        "Ctx decodes the file once for every gate"
+        "Each round gets a new reviewer id and never the builder report",
+        "Fix rounds stop at three with a P0 open, two for P1 and P2"
       ]
     },
     {
-      "dot": "violet",
-      "title": "What a build writes",
+      "dot": "amber",
+      "title": "Approval is pinned",
       "items": [
-        "video.mp4: frames piped into ffmpeg through shared memory",
-        "frames.hash, thumbs.npy: one digest and thumb per frame",
-        "mix_raw.wav, sfx.wav, cuesheet.json: stems and cue sheet",
-        "approved/: hashes the reviewer passed"
+        "qa.py approve keeps hashes of the file and key frames",
+        "A later change marks it stale (Q1301) until it is approved again"
       ]
     },
     {
       "dot": "emerald",
-      "title": "Proved by",
+      "title": "58 Q codes",
       "items": [
-        "qa.py selftest: 144 planted faults cover all 58 codes",
-        "Template smoke at 1920x1080 and 1080x1920"
+        "One table in contract.py names every code",
+        "qa.py selftest plants a fault for each one"
       ]
     }
   ]
