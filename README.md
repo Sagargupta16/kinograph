@@ -17,11 +17,11 @@ Then ask for a video, for example `/praxinoscope:praxinoscope a 30 second launch
 
 | Need | Why | Check |
 | --- | --- | --- |
-| [uv](https://docs.astral.sh/uv/) | Runs the engine with pinned Pillow and numpy (Python 3.14, fetched by uv) | `uv --version` |
+| [uv](https://docs.astral.sh/uv/) | Runs the engine with pinned Pillow and numpy, on the Python version the engine pins (uv fetches it) | `uv --version` |
 | ffmpeg with libx264 | Encodes, measures loudness, decodes for the gates | `ffmpeg -encoders` lists `libx264` |
 | A system font | Text rendering (Arial on Windows, Helvetica on macOS, Liberation or DejaVu on Linux) | `bash skills/praxinoscope/setup.sh` |
 
-`setup.sh` checks all of it and ends `SETUP: PASS`. The engine's `.python-version` pins Python 3.14 for every build folder. Each style names two free fonts under the SIL Open Font License; they are not bundled, so install them for the intended look (`skills/praxinoscope/styles/README.md` says where each comes from), or the builder draws with the system font. Narration is optional: the default voice (Kokoro-82M `af_heart`) needs about 326 MB of model files, downloaded only when you say so; see `skills/praxinoscope/references/voice.md`.
+`setup.sh` checks all of it and ends `SETUP: PASS`. The engine's `.python-version` pins one Python version for every build folder, so a proof and its render always run on the same interpreter. Each style names two free fonts under the SIL Open Font License; they are not bundled, so install them for the intended look (`skills/praxinoscope/styles/README.md` says where each comes from), or the builder draws with the system font. Narration is optional: the default voice (Kokoro-82M `af_heart`) needs about 326 MB of model files, downloaded only when you say so; see `skills/praxinoscope/references/voice.md`.
 
 ## How a video gets made
 

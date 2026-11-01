@@ -16,7 +16,7 @@ cp -r <skill>/engine/. videos/<slug>/
 
 The `/.` copies the contents, `qa_fixtures/` included. `videos/<slug>/` sits under the user's current folder unless the user names another, and everything a build writes stays inside it. Never edit the skill's own engine for one video. Claude Code's Bash tool runs bash on Windows (Git Bash), macOS and Linux, so the same command works on all three.
 
-Run every script from the working folder with `uv run --no-project --with-requirements requirements.txt python <script>`. Pillow and numpy are pinned with hashes in `requirements.txt`; uv picks the interpreter: the template runs used Python 3.14.9 on 2026-10-31 and Python 3.15.2 on 2026-11-01, both with Pillow 13.0.0 and numpy 2.5.4, and both passed every gate and `qa.py selftest`. `setup.sh` in the skill folder checks the toolchain once.
+Run every script from the working folder with `uv run --no-project --with-requirements requirements.txt python <script>`. Pillow and numpy are pinned with hashes in `requirements.txt`, and the interpreter by `.python-version`, which the copy brings into every working folder, so a proof and its render run on the same Python. The template passed every gate and `qa.py selftest` on Python 3.14.9 (2026-10-31) and 3.15.2 (2026-11-01), both with Pillow 13.0.0 and numpy 2.5.4. `setup.sh` in the skill folder checks the toolchain once.
 
 | File | What it does |
 |---|---|

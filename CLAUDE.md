@@ -16,7 +16,7 @@ Installed with `/plugin marketplace add Sagargupta16/praxinoscope` then `/plugin
 
 ## Stack
 
-- **Language**: Python 3.14 with pinned Pillow and numpy (`skills/praxinoscope/engine/requirements.txt`, hashed), run through uv; ffmpeg with libx264
+- **Language**: Python at the version `skills/praxinoscope/engine/.python-version` pins (Renovate keeps it current), with pinned Pillow and numpy (`skills/praxinoscope/engine/requirements.txt`, hashed), run through uv; ffmpeg with libx264
 - **Framework**: none at runtime; the plugin is Markdown (skill, agents, styles, references) plus the engine
 - **Database**: none
 - **Package manager**: uv for the engine; `pip install -r requirements-dev.txt` (ruff) for development
