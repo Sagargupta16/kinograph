@@ -56,7 +56,7 @@ Run every script from the working folder as `uv run --no-project --with-requirem
 | `requirements.txt` | the same two, compiled with their sha256 hashes |
 | `requirements-voice.in` | the optional text-to-speech pins; nothing installs this file (see the table of files) |
 
-`bash <skill>/setup.sh` checks the machine and installs nothing. On 2026-11-01 it found uv 0.13.6, an ffmpeg 9.0.2 build that has libx264, ffprobe, Python 3.15.2 with Pillow 13.0.0 and numpy 2.5.4 from the pins, and Arial Bold as the default bold font, and ended `SETUP: PASS` with exit code 0.
+`bash <skill>/setup.sh` checks the machine and installs nothing system-wide; its first uv run may fetch the pinned Python and wheels into uv's cache. On 2026-11-01 it found uv 0.13.6, an ffmpeg 9.0.2 build that has libx264, ffprobe, Python 3.15.2 with Pillow 13.0.0 and numpy 2.5.4 from the pins, and Arial Bold as the default bold font, and ended `SETUP: PASS` with exit code 0.
 
 ## The files in engine/
 
@@ -193,7 +193,7 @@ Every stage writes `build.json` first. Both stages that need ffmpeg look for it 
 
 ### proof
 
-It runs the gates that need no file: `qa.proof_rows` (Q501 on frame 0, the text gates on the registry and the text recorder), `qa_purity.run` (Q1201) and `qa_lint.run("scenes.py")`. It writes their rows to `qa_proof.json`. Then it draws `proof.png` (up to 12 stills: scene middles first, then window edges, then scene bounds; 9 on the template) and starts `review_times.json` afresh with this proof's moments, carrying over only the `changed` entries `qa.py diff` left (they stay until the next diff). From it the stage draws `proof_keys.png` (with more pages when the cells do not fit), `proof_strips.png` (frames f-2 to f+2, only when an entry asks for a strip) and `proof_gantt.png`. It prints every row and the summary, and exits 0 when all pass, 1 on any FIX, and 2 on a NOT CHECKED with no FIX. On the template the stage took 10 s at 1920x1080.
+It runs the gates that need no file: `qa.proof_rows` (Q501 on frame 0, the text gates on the registry and the text recorder), `qa_purity.run` (Q1201) and `qa_lint.run("scenes.py")`. It writes their rows to `qa_proof.json`. Then it draws `proof.png` (up to 12 stills: scene middles first, then window edges, then scene bounds; 9 on the template) and starts `review_times.json` afresh with this proof's moments, carrying over only the `changed` entries `qa.py diff` left (they stay until the next diff). From it the stage draws `proof_keys.png` (with more pages when the cells do not fit), `proof_strips.png` (frames f-2 to f+2, only when an entry asks for a strip) and `proof_gantt.png`. It prints every row and the summary, and exits 0 when all pass, 1 on any FIX, and 2 on a NOT CHECKED with no FIX. A `draw(t)` that raises stops the stage with its traceback before any row is printed, since the text gates draw first and are not guarded ([troubleshooting.md](troubleshooting.md)). On the template the stage took 10 s at 1920x1080.
 
 ### full
 
@@ -319,13 +319,13 @@ All in the working folder. The names come from `contract.py` unless the row says
 
 In `full` and `audio`, `run_all.deliver` calls `audio.render_audio(scenes, fps=E.FPS)`. That writes `mix_raw.wav` (music plus effects), `sfx.wav` (the effects bus alone, at the same scale) and the cue sheet (`cuesheet.json` with `cue_sounds.npz`). Then `master_and_mux` runs `audio.master(mix_raw.wav, mix.wav, TP=ceiling)` and the mux, and measures the true peak of the decoded `out.mp4` with `qa.loud`. While that peak is over -1.3 dBTP (`TP_MAX` -1.0 less `TP_TOL` 0.3), it masters again at a lower ceiling, at most 3 times (`RETRIES`, `MARGIN` 0.2 dB). It keeps the try with the lowest peak among those that are Q805 clean and inside -1 dBTP, or among all tries when none is, and masters and muxes that one again if it was not the last.
 
-The template score (`audio.bed`): a kick on beats 1 and 3, a hat on every off-beat, and a bass and pad line on the music bus. On the effects bus, at each cut, a whoosh whose loudest point leads the cut by `WHOOSH_LEAD` (0.08 s) and a hit whose onset is on the cut's frame, labelled with the cue at that time. A kick within 3 frames of a cut is left out, so two heavy sounds never stack. The cuts come from `scenes.CUTS`, or from every scene start after 0.
+The template score (`audio.bed`): a kick on beats 1 and 3, a tick on every off-beat, and one sine `tone` on every beat, its pitch changing each bar (220, 261.63, 196, 246.94 Hz), all on the music bus. On the effects bus, at each cut, a whoosh whose loudest point leads the cut by `WHOOSH_LEAD` (0.08 s) and a hit whose onset is on the cut's frame, labelled with the cue at that time. A kick within 3 frames of a cut is left out, so two heavy sounds never stack. The cuts come from `scenes.CUTS`, or from every scene start after 0.
 
 | Where | Sample rate |
 |---|---|
 | `audio.SR`, `synth.SR`, `voice.SR`: the buses, `mix_raw.wav`, `sfx.wav`, `narration.wav` | 44,100 Hz |
 | `audio.SR_MASTER`: the master resamples to it, limits there and writes `mix.wav` (16-bit stereo) | 48,000 Hz |
-| the gates' decodes of the file | 48,000 Hz (true peak, sync), 8,000 Hz (silence, the cue search) |
+| the gates' decodes of the file | 48,000 Hz (true peak, and the check that confirms each cue on the file), 8,000 Hz (silence, and the onset detector used when there is no cue sheet); with a cue sheet, Q902 searches the 44.1 kHz stems |
 
 The master (`audio.master`) applies one static gain to -14 LUFS, then the true-peak limiter: 4x oversampled through Kaiser-windowed sinc filters (`OS`, `TAPS` 32 a phase), 3 ms lookahead and 100 ms release, with no delay added. It measures again with ffmpeg's ebur128 and nudges the gain, up to 6 passes, until it is within 0.05 LU of the target and at or under the ceiling. The first ceiling is `audio.CEILING`, -2.0 dBTP, which leaves room for the peak the AAC encode adds. On the template the encode raised the peak from -2.00 to -1.80 dBTP. Q805 fails a master that missed by more than 0.1 LU or 0.05 dB, or whose limiter took more than 0.5 LU off the programme (`LINEAR_COST`) or more than 6 dB at any moment (`LINEAR_DEPTH`). On the template: gain +0.82 dB in 2 passes, 0.22 LU taken, at most 1.4 dB.
 
