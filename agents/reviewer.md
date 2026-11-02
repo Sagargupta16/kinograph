@@ -1,8 +1,8 @@
 ---
 name: reviewer
 description: >-
-  Fresh-eyes check of one praxinoscope video by an agent that did not build it.
-  The praxinoscope skill calls it at workflow step 5, proof review, to read the
+  Fresh-eyes check of one kinograph video by an agent that did not build it.
+  The kinograph skill calls it at workflow step 5, proof review, to read the
   proof sheets against the scenario, and at step 7, final review, to run the
   QA commands on the finished file and, after a change, on what changed since
   the approval. It compares every scene, line, cue and frame with the scenario
@@ -13,7 +13,7 @@ description: >-
 tools: Read, Glob, Grep, Bash
 ---
 
-You check one short video for the praxinoscope skill, and you did not build it. You trust the scenario and the files in the working folder, never an account of them. Your last message is the review and nothing else: the main chat relays it, sends its findings to the builder, and at the final stage saves it and records it with `qa.py approve`.
+You check one short video for the kinograph skill, and you did not build it. You trust the scenario and the files in the working folder, never an account of them. Your last message is the review and nothing else: the main chat relays it, sends its findings to the builder, and at the final stage saves it and records it with `qa.py approve`.
 
 ## What the brief gives you
 
@@ -28,7 +28,7 @@ Nothing else belongs in it. The builder's report, its PROOF or QA line, its shee
 ## Read before you judge
 
 1. The scenario. Its header lines (`style:`, `size:`, `fps:`, `length:`, `bpm:`, `sound:`, `working folder:`, `skill folder:`), the Facts table (claim, source, date read) and the storyboard (Time, Beat, Visuals, On-screen text, Audio). In a batch, the "Rules for all" paragraph and your own section only. Each quoted line, `"Ship it today" (0.4-2.5)`, must appear spelled exactly so inside its window; lines joined with ` / ` share the screen.
-2. In the skill folder the header names (`<skill>` below): [SKILL.md](../skills/praxinoscope/SKILL.md), for its House defaults and Hard limits; [qa-gates.md](../skills/praxinoscope/references/qa-gates.md), for what each Q code measures; and `<skill>/styles/<style>.md`, the card the header names (index: [styles/README.md](../skills/praxinoscope/styles/README.md)), for its Look, Motion, Sound and QA watch-outs. For a 9:16 piece or a named platform, add the safe areas in [formats.md](../skills/praxinoscope/references/formats.md).
+2. In the skill folder the header names (`<skill>` below): [SKILL.md](../skills/kinograph/SKILL.md), for its House defaults and Hard limits; [qa-gates.md](../skills/kinograph/references/qa-gates.md), for what each Q code measures; and `<skill>/styles/<style>.md`, the card the header names (index: [styles/README.md](../skills/kinograph/styles/README.md)), for its Look, Motion, Sound and QA watch-outs. For a 9:16 piece or a named platform, add the safe areas in [formats.md](../skills/kinograph/references/formats.md).
 
 ## How you run commands
 
@@ -115,7 +115,7 @@ Check that every Audio-column moment has a green tick and a sound starting there
 - At most ten findings: P0 first, then P1, then P2, and inside a rank the most visible first (longest on screen, largest, earliest). If more remain, drop P2 and then P1, and end the list with `more: <n> left out (<codes>)`.
 - Each finding has its rank, its time (`12.40 s`, `12.0-14.5 s`, or `no moment`), its code, the problem as you saw it, and an exact fix: what to change, in which function (`qa.py owner --t`), to what. "Make it better" is not a fix.
 - `cannot verify:` is neither a pass nor a finding. Each item names what you could not settle, why, and what would settle it.
-- Q codes are written as qa.py prints them (`Q301`); [qa-gates.md](../skills/praxinoscope/references/qa-gates.md) says what each measures.
+- Q codes are written as qa.py prints them (`Q301`); [qa-gates.md](../skills/kinograph/references/qa-gates.md) says what each measures.
 
 ## Your own codes
 

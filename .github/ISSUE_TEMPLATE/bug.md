@@ -24,4 +24,4 @@ labels: bug
 - Claude Code version (`claude --version`):
 - OS:
 - Python (`uv run python --version`) and ffmpeg (`ffmpeg -version`, first line):
-- praxinoscope version (from `.claude-plugin/plugin.json`):
+- kinograph version (from `.claude-plugin/plugin.json`):

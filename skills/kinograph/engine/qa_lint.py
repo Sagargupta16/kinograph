@@ -4,7 +4,7 @@
 # Also owner(): the scene function(s) a time or a traceback belongs to, so a fix re-reads only those.
 # CLI: `python qa.py lint [scenes.py]`, `python qa.py owner --t 12.5`, `python qa.py owner --traceback err.txt`.
 # A finding that is meant (a memo dict, a mask, a typesetter) is silenced by a pragma on its line, on the def line of
-# the function holding it, or (Q1203) on the line that binds the module-level name: `# praxinoscope: state-ok` (Q1203),
+# the function holding it, or (Q1203) on the line that binds the module-level name: `# kinograph: state-ok` (Q1203),
 # `rng-ok` (Q1202), `shadow-ok` (Q1204), `text-ok` (Q1205), `colour-ok` (Q1206).
 import ast
 import re
@@ -49,7 +49,7 @@ USER_ERRORS = (
     TypeError,
     ValueError,
 )
-PRAGMA = re.compile(r"#\s*praxinoscope:\s*([\w\- ,]+)")
+PRAGMA = re.compile(r"#\s*kinograph:\s*([\w\- ,]+)")
 HEX = re.compile(r"#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})")
 # reads that differ from run to run: the clock and the OS entropy pool
 CLOCKS = {
@@ -169,10 +169,10 @@ FIXES = {
     "Q1202": "seed it per frame or element: engine.rng(scene, element, frame), or random.Random(seed) built inside "
     "draw; zlib.crc32(s.encode()) instead of hash(s); no clock, os.urandom or uuid in a frame",
     "Q1203": "compute it from t (or an lru_cache keyed by everything it depends on); a meant memo or QA log gets "
-    "# praxinoscope: state-ok",
-    "Q1204": "rename yours (nook_text) or call the engine helper; a deliberate override gets # praxinoscope: shadow-ok",
+    "# kinograph: state-ok",
+    "Q1204": "rename yours (nook_text) or call the engine helper; a deliberate override gets # kinograph: shadow-ok",
     "Q1205": "draw text with engine text/text_outline/text_halo and font(); a mask or a style's own typesetter gets "
-    "# praxinoscope: text-ok",
+    "# kinograph: text-ok",
     "Q1206": "name the colour in the palette block at the top of scenes.py (INK, PAPER, ACCENT) and use the name",
 }
 MEANS = {

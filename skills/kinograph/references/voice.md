@@ -43,7 +43,7 @@ Platforms: sapi exists only on Windows. kokoro-ts, kokoro and piper run through 
 
 ### The voice files and the download
 
-Model and voice files live outside every repo, one folder per engine, under `$PRAXINOSCOPE_VOICES` or, when that is unset, `~/.cache/praxinoscope/voices` (`voice.VOICE_DIR`). For the default narrator:
+Model and voice files live outside every repo, one folder per engine, under `$KINOGRAPH_VOICES` or, when that is unset, `~/.cache/kinograph/voices` (`voice.VOICE_DIR`). For the default narrator:
 
 ```
 <voices>/kokoro-82m-v1.0-onnx-timestamped/

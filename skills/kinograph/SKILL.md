@@ -1,5 +1,5 @@
 ---
-name: praxinoscope
+name: kinograph
 description: >-
   Makes short videos from code. It turns a brief into a fact-checked
   storyboard, draws every frame in Python with Pillow and numpy, writes and
@@ -14,7 +14,7 @@ description: >-
 license: MIT
 ---
 
-# praxinoscope
+# kinograph
 
 A video here is a program: `scenes.py` draws frame t as a pure function of t, so the same source always gives the same file and a fix redraws only what it touches. The user approves twice, the storyboard and then the proof sheet, and gets a file only after the gates and a final review have passed.
 
@@ -26,7 +26,7 @@ Links and the `engine/`, `styles/` and `references/` paths are relative to this 
 - Engine scripts run from the video's working folder once the builder has copied the engine there: `uv run --no-project --with-requirements requirements.txt python <script> ...`. Below, `python` means exactly that.
 - Outputs go to `videos/<slug>/` under the current folder unless the user names another. A batch keeps one scenario at `videos/<batch>/scenario.md` (a "Rules for all" paragraph, then one `## <nn> <slug>` section per video) and builds each video in `videos/<batch>/builds/<nn-slug>/`, with its own builder and reviewers.
 - Before launching long background agents in the Claude desktop app, hold the computer awake with the app's keep-awake tool. On battery the app holds it only with its Keep awake on battery power setting on, and a closed lid sleeps whatever the setting. A long review once lost 6.5 hours to a laptop that went to sleep after the turn ended.
-- The agents are `praxinoscope:builder` and `praxinoscope:reviewer`. In a session that started before the plugin was installed those types are missing: launch a general-purpose agent instead and tell it to read and follow `<skill>/../../agents/builder.md` or `<skill>/../../agents/reviewer.md`.
+- The agents are `kinograph:builder` and `kinograph:reviewer`. In a session that started before the plugin was installed those types are missing: launch a general-purpose agent instead and tell it to read and follow `<skill>/../../agents/builder.md` or `<skill>/../../agents/reviewer.md`.
 
 ## House defaults
 
@@ -67,11 +67,11 @@ Before showing the table, run `uv run --no-project --with-requirements <skill>/e
 
 ### 4. Proof
 
-Launch `praxinoscope:builder` in proof mode. Its brief: the brief from step 1, the approved storyboard (the scenario path, and the section in a batch), the style id, size, length, fps, BPM, the sound plan, the working folder and `<skill>`. It copies the engine into the working folder, writes `scenes.py` and the score, runs `run_all.py proof` and stops. Its report opens with the PROOF line (PASS, FIX or NOT CHECKED) and lists the sheets.
+Launch `kinograph:builder` in proof mode. Its brief: the brief from step 1, the approved storyboard (the scenario path, and the section in a batch), the style id, size, length, fps, BPM, the sound plan, the working folder and `<skill>`. It copies the engine into the working folder, writes `scenes.py` and the score, runs `run_all.py proof` and stops. Its report opens with the PROOF line (PASS, FIX or NOT CHECKED) and lists the sheets.
 
 ### 5. Proof review
 
-Launch `praxinoscope:reviewer` with only the stage, the scenario path (and section), the working folder and a reviewer id such as `proof-1`. Never give it the builder's report.
+Launch `kinograph:reviewer` with only the stage, the scenario path (and section), the working folder and a reviewer id such as `proof-1`. Never give it the builder's report.
 
 - REVIEW FIX: send the findings to the same builder as one numbered list. It fixes them, runs the proof again and reports; then a fresh reviewer (`proof-2`, and so on) checks. Stop after three rounds while a P0 or a FIX row is open, or after two rounds for P1 and P2 findings, and tell the user what is still open.
 - REVIEW PASS: show the user `proof.png`, the contact sheet, with the gate results, and ask whether to render.
@@ -96,7 +96,7 @@ On REVIEW PASS, save the reply verbatim to `review/reply_final_<n>.txt` in the w
 
 ## Narration voices
 
-`voice.synthesize` speaks with the kokoro-ts engine and the af_heart voice once its files are in `~/.cache/praxinoscope/voices`: about 326 MB of model plus 0.5 MB per voice. Ask the user before that download; the builder never downloads anything. `python voice_samples.py` renders the same lines in every ready voice, so the user can pick by ear. The Windows SAPI voices sound robotic: use them only as a timing fallback, and say so. Details: [references/voice.md](references/voice.md).
+`voice.synthesize` speaks with the kokoro-ts engine and the af_heart voice once its files are in `~/.cache/kinograph/voices`: about 326 MB of model plus 0.5 MB per voice. Ask the user before that download; the builder never downloads anything. `python voice_samples.py` renders the same lines in every ready voice, so the user can pick by ear. The Windows SAPI voices sound robotic: use them only as a timing fallback, and say so. Details: [references/voice.md](references/voice.md).
 
 ## Encoder fallbacks
 

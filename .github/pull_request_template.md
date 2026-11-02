@@ -14,7 +14,7 @@
 ## Checklist
 
 - [ ] `python scripts/check.py` passes
-- [ ] `ruff check` and `ruff format --check` pass on `skills/praxinoscope/engine` and `scripts`
+- [ ] `ruff check` and `ruff format --check` pass on `skills/kinograph/engine` and `scripts`
 - [ ] `npx -y @sagargupta1610/skillcheck@0.2.5 lint skills` reports no errors
 - [ ] `qa.py selftest` from a copy of the engine ends `SELFTEST: PASS`
 - [ ] A drawing, sound or gate change: the template renders at 1920x1080 and 1080x1920 with `PROOF: PASS`, a `DELIVERED` line and `QA: PASS` (paste them)

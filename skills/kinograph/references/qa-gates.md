@@ -279,7 +279,7 @@ Q705, Q707 and Q708 are for the H.264 deliverable: on any other codec all three 
 - Q1205: `.text()` or `.multiline_text()` on an ImageDraw (a single-band mask image, or a number as the fill, is allowed), and loading a font with `ImageFont.truetype`, `FreeTypeFont`, `load_default`, `load` or `load_path` instead of `engine.font()`.
 - Q1206: a hex colour string (`#rgb`, `#rgba`, `#rrggbb`, `#rrggbbaa`) inside a function or as a parameter default, or an RGB or RGBA tuple of ints from 0 to 255 passed to a colour keyword (`fill`, `color`, `colour`, `outline`, `stroke_fill`, `background`, `bg`, `fg`, `ink`, `col`, `tint`, `halo`) or used as a colour parameter's default. A fully transparent tuple, and three or four mixed decimal digits such as `#404`, do not count.
 
-The lint's pragmas silence a meant finding: a comment `# praxinoscope: <tag>` on the finding's line, on the def line of the function holding it, or for Q1203 on the line that binds the module-level name.
+The lint's pragmas silence a meant finding: a comment `# kinograph: <tag>` on the finding's line, on the def line of the function holding it, or for Q1203 on the line that binds the module-level name.
 
 | Tag | Clears |
 |---|---|
