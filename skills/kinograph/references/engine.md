@@ -19,7 +19,7 @@ In the commands below, `python` stands for `uv run --no-project --with-requireme
 What enforces it, all in the proof stage (codes in [qa-gates.md](qa-gates.md)):
 
 - The purity gate, Q1201 (FIX): frames at the ends, both sides of the cuts, cues, key times and an even spread are hashed in order in this process, in reverse order in a fresh `python -I` process, and through a spawn pool, and must match exactly. On the template that was 24 frames.
-- The lint of `scenes.py` and the local modules it imports: Q1202 (FIX) for unseeded randomness, clock reads and hashes of strings; Q1203 to Q1206 (NOTE) for module state written inside a function, an engine helper defined again, text drawn outside the engine's text helpers and a colour literal outside the palette block; Q904 and Q905 (NOTE) for a time off the frame grid and a beat that is not a whole number of frames. A finding that is meant is silenced with a pragma comment on its line: `# praxinoscope: rng-ok`, `state-ok`, `shadow-ok`, `text-ok` or `colour-ok`.
+- The lint of `scenes.py` and the local modules it imports: Q1202 (FIX) for unseeded randomness, clock reads and hashes of strings; Q1203 to Q1206 (NOTE) for module state written inside a function, an engine helper defined again, text drawn outside the engine's text helpers and a colour literal outside the palette block; Q904 and Q905 (NOTE) for a time off the frame grid and a beat that is not a whole number of frames. A finding that is meant is silenced with a pragma comment on its line: `# kinograph: rng-ok`, `state-ok`, `shadow-ok`, `text-ok` or `colour-ok`.
 
 ### The names a scenes.py declares
 

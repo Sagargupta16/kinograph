@@ -124,8 +124,8 @@ NARRATOR_ENGINE, NARRATOR_VOICE = "kokoro-ts", "af_heart"
 CACHE_VERSION = 2
 # model and voice files, one folder per engine; never inside the repo
 VOICE_DIR = Path(
-    os.environ.get("PRAXINOSCOPE_VOICES")
-    or Path.home() / ".cache" / "praxinoscope" / "voices"
+    os.environ.get("KINOGRAPH_VOICES")
+    or Path.home() / ".cache" / "kinograph" / "voices"
 )
 
 
@@ -1107,7 +1107,7 @@ def get_engine(name):
 
 # AudioPosition counts bytes as if the stream were 16 kHz 16-bit mono (probed 2026-10-28: with the default 22.05 kHz
 # file every word time ran 1.378x late, at 44.1 kHz 2.756x), so the bridge writes exactly that format.
-_SAPI_PS1 = r"""# sapi.ps1 : written and run by praxinoscope voice.py: powershell -NoProfile -ExecutionPolicy Bypass -File sapi.ps1 <mode> <json>
+_SAPI_PS1 = r"""# sapi.ps1 : written and run by kinograph voice.py: powershell -NoProfile -ExecutionPolicy Bypass -File sapi.ps1 <mode> <json>
 param([string]$Mode, [string]$Json)
 $ErrorActionPreference = "Stop"
 Add-Type -AssemblyName System.Speech
@@ -1150,7 +1150,7 @@ Unregister-Event -SourceIdentifier zdone
 $s.Dispose()
 """
 
-_WORKER = r'''# voice_worker.py : written and run by praxinoscope voice.py inside uv run --no-project --with <engine packages>
+_WORKER = r'''# voice_worker.py : written and run by kinograph voice.py inside uv run --no-project --with <engine packages>
 # One job file in; one WAV per line plus out.json out. UNTESTED engines: written to their documented APIs.
 import json
 import sys

@@ -2,12 +2,12 @@
   "schema_version": 2,
   "diagram_type": "workflow",
   "meta": {
-    "title": "How praxinoscope makes a video",
+    "title": "How kinograph makes a video",
     "locale": "en",
     "quality_profile": "showcase",
-    "output": "docs/praxinoscope-flow.html",
+    "output": "docs/kinograph-flow.html",
     "repository": {
-      "url": "https://github.com/Sagargupta16/praxinoscope.git",
+      "url": "https://github.com/Sagargupta16/kinograph.git",
       "revision": "038f36b41d3569aaa6fe864a999de8c64d2a7bcf"
     },
     "legend": {
@@ -134,7 +134,7 @@
       "tag": "6 style cards",
       "sources": [
         {
-          "path": "skills/praxinoscope/SKILL.md",
+          "path": "skills/kinograph/SKILL.md",
           "line": 37,
           "end_line": 56,
           "label": "steps 1 and 2"
@@ -151,19 +151,19 @@
       "tag": "qa.py holds",
       "sources": [
         {
-          "path": "skills/praxinoscope/SKILL.md",
+          "path": "skills/kinograph/SKILL.md",
           "line": 58,
           "end_line": 66,
           "label": "step 3"
         },
         {
-          "path": "skills/praxinoscope/engine/qa.py",
+          "path": "skills/kinograph/engine/qa.py",
           "line": 210,
           "end_line": 214,
           "label": "storyboard_holds"
         },
         {
-          "path": "skills/praxinoscope/engine/qa.py",
+          "path": "skills/kinograph/engine/qa.py",
           "line": 1789,
           "end_line": 1805,
           "label": "holds command"
@@ -180,7 +180,7 @@
       "sublabel": "first stop",
       "sources": [
         {
-          "path": "skills/praxinoscope/SKILL.md",
+          "path": "skills/kinograph/SKILL.md",
           "line": 66,
           "end_line": 66,
           "label": "nothing built before"
@@ -203,7 +203,7 @@
       "tag": "run_all.py proof",
       "sources": [
         {
-          "path": "skills/praxinoscope/SKILL.md",
+          "path": "skills/kinograph/SKILL.md",
           "line": 68,
           "end_line": 70,
           "label": "step 4"
@@ -226,19 +226,19 @@
       "tag": "PROOF: PASS",
       "sources": [
         {
-          "path": "skills/praxinoscope/engine/run_all.py",
+          "path": "skills/kinograph/engine/run_all.py",
           "line": 84,
           "end_line": 103,
           "label": "proof_stage"
         },
         {
-          "path": "skills/praxinoscope/engine/qa.py",
+          "path": "skills/kinograph/engine/qa.py",
           "line": 1237,
           "end_line": 1257,
           "label": "proof_rows"
         },
         {
-          "path": "skills/praxinoscope/references/qa-gates.md",
+          "path": "skills/kinograph/references/qa-gates.md",
           "line": 13,
           "end_line": 13,
           "label": "proof codes"
@@ -255,7 +255,7 @@
       "tag": "no builder report",
       "sources": [
         {
-          "path": "skills/praxinoscope/SKILL.md",
+          "path": "skills/kinograph/SKILL.md",
           "line": 72,
           "end_line": 77,
           "label": "step 5"
@@ -285,13 +285,13 @@
       "tag": "proof.png",
       "sources": [
         {
-          "path": "skills/praxinoscope/SKILL.md",
+          "path": "skills/kinograph/SKILL.md",
           "line": 77,
           "end_line": 81,
           "label": "show proof, ask"
         },
         {
-          "path": "skills/praxinoscope/SKILL.md",
+          "path": "skills/kinograph/SKILL.md",
           "line": 114,
           "end_line": 114,
           "label": "no render before"
@@ -314,13 +314,13 @@
           "label": "render mode"
         },
         {
-          "path": "skills/praxinoscope/engine/run_all.py",
+          "path": "skills/kinograph/engine/run_all.py",
           "line": 121,
           "end_line": 142,
           "label": "picture"
         },
         {
-          "path": "skills/praxinoscope/engine/render.py",
+          "path": "skills/kinograph/engine/render.py",
           "line": 305,
           "end_line": 321,
           "label": "render_to_ffmpeg"
@@ -337,19 +337,19 @@
       "tag": "FIX: .rejected.mp4",
       "sources": [
         {
-          "path": "skills/praxinoscope/engine/run_all.py",
+          "path": "skills/kinograph/engine/run_all.py",
           "line": 304,
           "end_line": 369,
           "label": "deliver"
         },
         {
-          "path": "skills/praxinoscope/engine/qa.py",
+          "path": "skills/kinograph/engine/qa.py",
           "line": 1315,
           "end_line": 1329,
           "label": "check"
         },
         {
-          "path": "skills/praxinoscope/references/qa-gates.md",
+          "path": "skills/kinograph/references/qa-gates.md",
           "line": 22,
           "end_line": 27,
           "label": "the verdict"
@@ -366,7 +366,7 @@
       "tag": "frames and audio picture",
       "sources": [
         {
-          "path": "skills/praxinoscope/SKILL.md",
+          "path": "skills/kinograph/SKILL.md",
           "line": 83,
           "end_line": 85,
           "label": "step 7"
@@ -389,19 +389,19 @@
       "tag": "a change reopens review",
       "sources": [
         {
-          "path": "skills/praxinoscope/SKILL.md",
+          "path": "skills/kinograph/SKILL.md",
           "line": 87,
           "end_line": 87,
           "label": "approval"
         },
         {
-          "path": "skills/praxinoscope/engine/qa_approve.py",
+          "path": "skills/kinograph/engine/qa_approve.py",
           "line": 754,
           "end_line": 786,
           "label": "review refusals"
         },
         {
-          "path": "skills/praxinoscope/references/qa-gates.md",
+          "path": "skills/kinograph/references/qa-gates.md",
           "line": 450,
           "end_line": 466,
           "label": "approval"
@@ -418,13 +418,13 @@
       "sublabel": "path, specs, weak spots",
       "sources": [
         {
-          "path": "skills/praxinoscope/SKILL.md",
+          "path": "skills/kinograph/SKILL.md",
           "line": 89,
           "end_line": 95,
           "label": "step 8"
         },
         {
-          "path": "skills/praxinoscope/engine/qa_approve.py",
+          "path": "skills/kinograph/engine/qa_approve.py",
           "line": 1918,
           "end_line": 1949,
           "label": "verify"

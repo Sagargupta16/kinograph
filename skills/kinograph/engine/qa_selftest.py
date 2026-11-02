@@ -284,7 +284,7 @@ def run(a):
     scope = only or set(C.CODES)
     unknown = sorted(only - set(C.CODES))
     ff = C.find_ffmpeg()
-    root = Path(tempfile.mkdtemp(prefix="praxinoscope_selftest_"))
+    root = Path(tempfile.mkdtemp(prefix="kinograph_selftest_"))
     print(f"selftest: fixtures in {FIXTURES}, temp folder {root}")
     lines, controls, threads = [], [], []
     if not only:

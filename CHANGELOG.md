@@ -2,6 +2,10 @@
 
 Every change, newest first, under the version that shipped it.
 
+## 0.2.0 - 2026-11-02
+
+- **Renamed from praxinoscope to kinograph.** The plugin, marketplace, skill and agents are now `kinograph`: install with `/plugin marketplace add Sagargupta16/kinograph` and `/plugin install kinograph@kinograph`, and run the skill as `/kinograph:kinograph`. The agents are `kinograph:builder` and `kinograph:reviewer`. The repository URL redirects from the old name; the install command does not.
+
 ## 0.1.1 - 2026-11-01
 
 - **Fixed: a refused build no longer deletes the last one.** `run_all.py audio` checked that the picture still matched `scenes.py`, and `run_all.py full` checked its size budget, only after deleting `out.mp4`, the mixes (and, for `full`, the picture) and rewriting `build.json`. Every refusal now comes first: an audio run at the wrong size and a 0.3 MB budget both left all seven build files byte for byte as they were.

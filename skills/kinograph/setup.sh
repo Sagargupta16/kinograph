@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Toolchain check for the praxinoscope engine. Run it once, from any folder:
+# Toolchain check for the kinograph engine. Run it once, from any folder:
 #   bash <skill>/setup.sh
 # It reads the machine and installs nothing system-wide (the first uv run may fetch the pinned Python and the
 # pinned wheels into uv's own cache). Each passing check prints an "ok" line. Each gap prints one line that starts
@@ -197,7 +197,7 @@ check_font() {
   fi
 }
 
-printf 'praxinoscope setup check, engine at %s\n' "$engine"
+printf 'kinograph setup check, engine at %s\n' "$engine"
 check_uv
 check_ffmpeg
 

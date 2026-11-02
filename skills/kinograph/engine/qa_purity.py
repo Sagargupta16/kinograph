@@ -439,7 +439,7 @@ def _watch(sites):
     mon = sys.monitoring
     if not sites or mon.get_tool(MON) is not None:
         return None
-    mon.use_tool_id(MON, "praxinoscope purity")
+    mon.use_tool_id(MON, "kinograph purity")
     ran = set()
 
     def on_line(code, line):
@@ -502,7 +502,7 @@ def run(
         codes = {}
     rows = []
     with tempfile.TemporaryDirectory(
-        prefix="praxinoscope_purity_", ignore_cleanup_errors=True
+        prefix="kinograph_purity_", ignore_cleanup_errors=True
     ) as tmp:
         # pass 2 starts first and runs alongside pass 1; it holds its frames until it gets pass 1's digests
         fresh = _start(folder, cfg, frames[::-1], tmp, "fresh", hold=True)
